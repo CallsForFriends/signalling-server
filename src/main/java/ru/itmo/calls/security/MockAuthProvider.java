@@ -18,7 +18,7 @@ public class MockAuthProvider implements AuthProvider {
         String token = extractToken(request);
         return validateToken(token);
     }
-    
+
     @Override
     public UserIdentity validateToken(String token) {
         if (token == null || token.isBlank()) {
@@ -26,16 +26,9 @@ public class MockAuthProvider implements AuthProvider {
             return null;
         }
 
-        try {
-            Integer userId = Integer.parseInt(token);
-            log.debug("Mock auth: Extracted userId {} from token", userId);
-            return new UserIdentity(userId);
-        } catch (NumberFormatException e) {
-            // If token is not a number, use hash code as userId for testing
-            Integer userId = Math.abs(token.hashCode() % 10000);
-            log.debug("Mock auth: Generated userId {} from token hash", userId);
-            return new UserIdentity(userId);
-        }
+        Integer userId = Integer.parseInt(token);
+        log.debug("Mock auth: Extracted userId {} from token", userId);
+        return new UserIdentity(userId);
     }
 }
 
