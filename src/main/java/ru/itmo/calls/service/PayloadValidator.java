@@ -70,7 +70,12 @@ public class PayloadValidator {
         }
         
         try {
-            objectMapper.treeToValue(payload, WebRTCCandidate.class);
+            WebRTCCandidate candidate = objectMapper.treeToValue(payload, WebRTCCandidate.class);
+
+            if (candidate.candidate() == null || candidate.candidate().isEmpty()) {
+                log.debug("Received end-of-candidates signal");
+            }
+            
         } catch (Exception e) {
             throw new InvalidMessageException("Invalid WebRTC candidate payload: " + e.getMessage());
         }
