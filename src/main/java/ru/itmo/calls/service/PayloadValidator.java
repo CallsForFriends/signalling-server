@@ -21,11 +21,12 @@ public class PayloadValidator {
 
     public void validatePayload(SignalType type, JsonNode payload) {
         switch (type) {
+            case AUTH -> validateAuthPayload(payload);
             case WEBRTC_OFFER -> validateWebRTCOffer(payload);
             case WEBRTC_ANSWER -> validateWebRTCAnswer(payload);
             case WEBRTC_CANDIDATE -> validateWebRTCCandidate(payload);
             case CALL_REJECT -> validateCallReject(payload);
-            case CALL_INIT, CALL_ACCEPT, CALL_END, INCOMING_CALL, PING, PONG -> {
+            case CALL_INIT, CALL_ACCEPT, CALL_END, INCOMING_CALL, PING, PONG, AUTH_SUCCESS, AUTH_FAILED -> {
                 if (payload != null && !payload.isNull()) {
                     log.debug("Message type {} has optional payload", type);
                 }
@@ -82,6 +83,21 @@ public class PayloadValidator {
             } catch (Exception e) {
                 log.warn("Invalid call reject payload, using default reason: {}", e.getMessage());
             }
+        }
+    }
+    
+    private void validateAuthPayload(JsonNode payload) {
+        if (payload == null) {
+            throw new InvalidMessageException("AUTH message must have payload");
+        }
+        
+        if (!payload.has("token")) {
+            throw new InvalidMessageException("AUTH payload must contain 'token' field");
+        }
+        
+        String token = payload.get("token").asText();
+        if (token == null || token.isBlank()) {
+            throw new InvalidMessageException("Token cannot be empty");
         }
     }
 }

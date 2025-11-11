@@ -46,7 +46,7 @@ public class OnlineUsersService {
     }
 
     public boolean isUserOffline(Integer userId) {
-        return onlineUsers.containsKey(userId);
+        return !onlineUsers.containsKey(userId);
     }
 
     public List<Integer> getOnlineUsers() {

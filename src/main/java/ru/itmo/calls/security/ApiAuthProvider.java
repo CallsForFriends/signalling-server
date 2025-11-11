@@ -19,27 +19,18 @@ public class ApiAuthProvider implements AuthProvider {
     @Override
     public UserIdentity validateAndExtractIdentity(ServerHttpRequest request) {
         String token = extractToken(request);
-        
+        return validateToken(token);
+    }
+    
+    @Override
+    public UserIdentity validateToken(String token) {
         if (token == null || token.isBlank()) {
             log.warn("Invalid or missing token");
             return null;
         }
         
         // TODO: Implement actual REST API call to validate token
-        // Example:
-        // RestTemplate restTemplate = new RestTemplate();
-        // HttpHeaders headers = new HttpHeaders();
-        // headers.set("Authorization", authorizationHeader);
-        // HttpEntity<Void> entity = new HttpEntity<>(headers);
-        // ResponseEntity<ValidationResponse> response = restTemplate.exchange(
-        //     validateUrl,
-        //     HttpMethod.POST,
-        //     entity,
-        //     ValidationResponse.class
-        // );
-        // return new UserIdentity(response.getBody().getUserId());
-        
-        log.error("RestApiAuthProvider is not implemented yet");
+        log.error("ApiAuthProvider is not implemented yet");
         return null;
     }
 }

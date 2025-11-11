@@ -15,7 +15,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
     private final SignallingWebSocketHandler signallingWebSocketHandler;
     private final AuthHandshakeInterceptor authHandshakeInterceptor;
     
-    @Value("${signalling.cors.allowed-origins:http://localhost:3000}")
+    @Value("${cors.allowed-origins:http://localhost:3000}")
     private String allowedOrigins;
     
     public WebSocketConfig(

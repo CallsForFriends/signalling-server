@@ -9,6 +9,7 @@ import ru.itmo.calls.model.UserIdentity;
 
 public interface AuthProvider {
     UserIdentity validateAndExtractIdentity(ServerHttpRequest request);
+    UserIdentity validateToken(String token);
 
     default String extractToken(ServerHttpRequest request) {
         return Optional.ofNullable(request.getHeaders().get("Authorization"))

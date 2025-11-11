@@ -1,6 +1,10 @@
 package ru.itmo.calls.model;
 
 public enum SignalType {
+    AUTH,
+    AUTH_SUCCESS,
+    AUTH_FAILED,
+    
     CALL_INIT,
     INCOMING_CALL,
     CALL_ACCEPT,

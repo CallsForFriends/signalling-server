@@ -16,15 +16,26 @@ public class MockAuthProvider implements AuthProvider {
     @Override
     public UserIdentity validateAndExtractIdentity(ServerHttpRequest request) {
         String token = extractToken(request);
-
+        return validateToken(token);
+    }
+    
+    @Override
+    public UserIdentity validateToken(String token) {
         if (token == null || token.isBlank()) {
             log.warn("Invalid or missing token");
             return null;
         }
 
-        Integer userId = Integer.parseInt(token);
-        log.debug("Mock auth: Extracted userId {} from token", userId);
-        return new UserIdentity(userId);
+        try {
+            Integer userId = Integer.parseInt(token);
+            log.debug("Mock auth: Extracted userId {} from token", userId);
+            return new UserIdentity(userId);
+        } catch (NumberFormatException e) {
+            // If token is not a number, use hash code as userId for testing
+            Integer userId = Math.abs(token.hashCode() % 10000);
+            log.debug("Mock auth: Generated userId {} from token hash", userId);
+            return new UserIdentity(userId);
+        }
     }
 }
 

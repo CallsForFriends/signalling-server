@@ -2,7 +2,6 @@ package ru.itmo.calls.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.stereotype.Component;
@@ -32,16 +31,13 @@ public class AuthHandshakeInterceptor implements HandshakeInterceptor {
     ) {
         UserIdentity userIdentity = authProvider.validateAndExtractIdentity(request);
         
-        if (userIdentity == null || userIdentity.userId() == null) {
-            log.warn("WebSocket connection rejected: Invalid token from {}", 
-                request.getRemoteAddress());
-            response.setStatusCode(HttpStatus.UNAUTHORIZED);
-            return false;
+        if (userIdentity != null && userIdentity.userId() != null) {
+            attributes.put(USER_IDENTITY_ATTRIBUTE, userIdentity);
+            log.info("WebSocket handshake successful for user {} (header auth)", userIdentity.userId());
+            return true;
         }
 
-        attributes.put(USER_IDENTITY_ATTRIBUTE, userIdentity);
-        
-        log.info("WebSocket handshake successful for user {}", userIdentity.userId());
+        log.debug("WebSocket connection allowed without header auth, expecting AUTH message");
         return true;
     }
     
@@ -59,6 +55,15 @@ public class AuthHandshakeInterceptor implements HandshakeInterceptor {
 
     public static UserIdentity getUserIdentity(Map<String, Object> attributes) {
         return (UserIdentity) attributes.get(USER_IDENTITY_ATTRIBUTE);
+    }
+    
+    public static void setUserIdentity(Map<String, Object> attributes, UserIdentity userIdentity) {
+        attributes.put(USER_IDENTITY_ATTRIBUTE, userIdentity);
+    }
+    
+    public static boolean isAuthenticated(Map<String, Object> attributes) {
+        UserIdentity identity = getUserIdentity(attributes);
+        return identity != null && identity.userId() != null;
     }
 }
 
