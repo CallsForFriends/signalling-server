@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  signalling-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: signalling-server
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_PORT=8080
+
+      - LOGGING_LEVEL_RU_ITMO_CALLS=INFO
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB_SOCKET=INFO
+
+      - AUTH_PROVIDER_ENABLED=false
+      - AUTH_PROVIDER_API_URL=https://itmo-api/validate
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  default:
+    name: signalling-network
