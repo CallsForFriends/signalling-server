@@ -33,9 +33,10 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation("org.apache.commons:commons-lang3:3.19.0")
+    implementation("tools.jackson.datatype:jackson-datatype-jsr310:3.0.0-rc2")
 }
 
 kotlin {
